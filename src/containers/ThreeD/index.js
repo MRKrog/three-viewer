@@ -30,17 +30,17 @@ class ThreeD extends Component {
   }
 
    componentDidMount() {
-     // this.setScene();
-     // this.setCamera();
-     // this.startRenderer();
-     // this.setControls();
-     // this.handleLighting();
-     // this.startEnvironment();
+     this.setScene();
+     this.setCamera();
+     this.startRenderer();
+     this.setControls();
+     this.handleLighting();
+     this.startEnvironment();
      this.startGLTF();
      // this.setGlobalPost();
-    //  this.startTestGeo();
-    // this.startAnimationLoop();
-    // this.startRenderLoop();
+     this.startTestGeo();
+    this.startAnimationLoop();
+    this.startRenderLoop();
 
     window.addEventListener('resize', this.handleWindowResize);
   };
@@ -91,29 +91,30 @@ class ThreeD extends Component {
 
   }
 
-  startGLTF = () => {
+  startGLTF = async () => {
 
     // var pmremGenerator = new THREE.PMREMGenerator(renderer);
 
+   const pmremGeneratorTest = new THREE.PMREMGenerator( this.renderer );
 
-    this.pmremGenerator = new THREE.PMREMGenerator( this.renderer );
-    this.pmremGenerator.compileEquirectangularShader();
 
-    // new RGBELoader()
-		// 	.setDataType( THREE.UnsignedByteType )
-		// 	.load(hdrTest, (texture) => {
-		// 		var envMap = pmremGenerator.fromEquirectangular(texture).texture;
-		// 		pmremGenerator.dispose();
-		// 		this.scene.background = envMap;
-		// 		this.scene.environment = envMap;
-		// 		// model
-		// 		// var roughnessMipmapper = new RoughnessMipmapper( renderer );
-    //     const gltfLoader = new GLTFLoader().load(glbAsset, (glb) => {
-    //       // console.log('glb', glb);
-    // 			this.scene.add(glb.scene);
-    // 		});
-		// 	});
+    await new RGBELoader()
+			.setDataType( THREE.UnsignedByteType )
+			.load(hdrTest, (texture) => {
+				var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
+				pmremGeneratorTest.dispose();
+				this.scene.background = envMap;
+				this.scene.environment = envMap;
+				// model
+				// var roughnessMipmapper = new RoughnessMipmapper( renderer );
+        const gltfLoader = new GLTFLoader().load(glbAsset, (glb) => {
+          // console.log('glb', glb);
+    			this.scene.add(glb.scene);
+    		});
+			});
 
+
+    pmremGeneratorTest.compileEquirectangularShader();
 
       // var pmremGenerator = new THREE.PMREMGenerator( renderer );
       // pmremGenerator.compileEquirectangularShader();
@@ -183,8 +184,8 @@ class ThreeD extends Component {
   }
 
   startAnimationLoop = () => {
-    this.cube.rotation.x += 0.01;
-    this.cube.rotation.y += 0.01;
+    // this.cube.rotation.x += 0.01;
+    // this.cube.rotation.y += 0.01;
     this.requestID = window.requestAnimationFrame(this.startRenderLoop);
 
   };
