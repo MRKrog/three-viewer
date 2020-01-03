@@ -1,17 +1,11 @@
 import React, { Component } from 'react';
-
 import * as THREE from "three";
-
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import hdrTest from "../../assets/pedestrian_overpass_1k.hdr";
 import glbAsset from "../../assets/glb/piqhx0.glb";
-
-
-
-
 
 const style = {
     height: "500px",
@@ -25,20 +19,21 @@ class ThreeD extends Component {
       AAStatus: true,
       PCStatus: true,
       height: "",
-      width: ""
+      width: "",
+      shoe: ''
     };
   }
 
    componentDidMount() {
-     this.setScene();
-     this.setCamera();
-     this.startRenderer();
-     this.setControls();
-     this.handleLighting();
-     this.startEnvironment();
-     this.startGLTF();
-     // this.setGlobalPost();
-     this.startTestGeo();
+    console.log('hello');
+    this.setScene();
+    this.setCamera();
+    this.startRenderer();
+    this.setControls();
+    this.handleLighting();
+    this.startEnvironment();
+    this.startGLTF();
+    this.startTestGeo();
     this.startAnimationLoop();
     this.startRenderLoop();
 
@@ -92,64 +87,22 @@ class ThreeD extends Component {
   }
 
   startGLTF = async () => {
-
-    // var pmremGenerator = new THREE.PMREMGenerator(renderer);
-
    const pmremGeneratorTest = new THREE.PMREMGenerator( this.renderer );
 
+    new RGBELoader()
+    .setDataType(THREE.UnsignedByteType)
+    .load(hdrTest, (texture) => {
+    	var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
+    	pmremGeneratorTest.dispose();
+    	this.scene.background = envMap;
+    	this.scene.environment = envMap;
 
-    await new RGBELoader()
-			.setDataType( THREE.UnsignedByteType )
-			.load(hdrTest, (texture) => {
-				var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
-				pmremGeneratorTest.dispose();
-				this.scene.background = envMap;
-				this.scene.environment = envMap;
-				// model
-				// var roughnessMipmapper = new RoughnessMipmapper( renderer );
-        const gltfLoader = new GLTFLoader().load(glbAsset, (glb) => {
-          // console.log('glb', glb);
-    			this.scene.add(glb.scene);
-    		});
-			});
-
+      new GLTFLoader().load(glbAsset, (glb) => {
+    		this.scene.add(glb.scene);
+    	});
+    });
 
     pmremGeneratorTest.compileEquirectangularShader();
-
-      // var pmremGenerator = new THREE.PMREMGenerator( renderer );
-      // pmremGenerator.compileEquirectangularShader();
-
-
-    console.log(this.scene);
-    // const gltfLoader = new GLTFLoader().setPath('../../assets/glb/');
-    // gltfLoader.load( 'piqhx0.glb', function(glb) {
-    //   console.log('glb');
-    // // this.gltfLoader = new GLTFLoader().load('piqhx0.glb', (glb) => {
-		// 	this.scene.add(glb);
-		// });
-
-
-    // console.log(gltfLoader);
-
-    // const gltfLoader = new GLTFLoader().setPath('../../assets/glb/');
-    // gltfLoader.load( 'piqhx0.glb', function (glb) {
-  	// 		// gltf.scene.traverse( function ( child ) {
-  	// 		// 	if ( child.isMesh ) {
-  	// 		// 		roughnessMipmapper.generateMipmaps( child.material );
-  	// 		// 	}
-  	// 		// } );
-  	// 		this.scene.add(glb);
-  	// 		// roughnessMipmapper.dispose();
-		// });
-
-
-
-  };
-
-  setGlobalPost = () => {
-    console.log("Hey you hit Global Post Processing")
-    this.pmremGenerator = new THREE.PMREMGenerator( this.renderer );
-    this.pmremGenerator.compileEquirectangularShader();
   };
 
   startTestGeo = () => {
@@ -163,9 +116,7 @@ class ThreeD extends Component {
       flatShading: false
     });
     this.cube = new THREE.Mesh( geometry, material );
-    this.scene.add( this.cube );
-
-    console.log("Hey you hit GLTF", this.cube)
+    this.scene.add(this.cube);
   };
 
   handleLighting = () => {
@@ -208,7 +159,7 @@ class ThreeD extends Component {
   };
 
   render() {
-    return <div style={style} ref={ref => (this.mount = ref)} />;
+    return <div style={style} className="threeD" ref={ref => (this.mount = ref)} />;
   }
 }
 

@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import ThreeD from '../ThreeD';
-import Test from '../../test.js';
+import "./App.css";
+import bgImage from "../../assets/bgimage.jpg";
 
 class App extends Component {
   constructor() {
     super()
     this.state = {
-      isMounted: true
+      isMounted: false
     }
   }
-
-  componentDidMount() {
-    console.log('App Mounted');
-  };
 
   handleMount = () => {
     this.setState({
@@ -20,21 +17,22 @@ class App extends Component {
     })
   }
 
-
-  // <h2>Mikes Box</h2>
-  // <Test />
-
   render() {
     const { isMounted } = this.state;
 
     return (
-      <div>
-        <button onClick={() => this.handleMount()}>
-            {isMounted ? "Unmount" : "Mount"}
-        </button>
-        <h2>Bens Box</h2>
-        {isMounted && <ThreeD />}
-        {isMounted && <div>Scroll to zoom, drag to rotate</div>}
+      <div className="App" style={{ backgroundImage: `url(${bgImage})` }}>
+        {
+          isMounted ? (
+          <div className="modal">
+             <ThreeD />
+          </div>
+          ) : (
+          <button className="AppBtn" onClick={() => this.handleMount()}>
+              {isMounted ? "Exit" : "Modalize dez nuts"}
+          </button>
+          )
+        }
       </div>
     )
   }
